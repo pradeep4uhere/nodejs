@@ -1,11 +1,14 @@
 var mysql = require('mysql')
 var config;
 config = {
-connection : mysql.createConnection({
-                      host: 'localhost',
-                      user: 'root',
-                      password: 'admin@123',
-                      database: 'react_db'
-              })
+connection : mysql.createPool({
+     connectionLimit : 100, //important
+     host     : 'localhost',
+     user     : 'root',
+     password : 'admin@1234',
+     database : 'react_db',
+     debug    :  false
+ })
 }
 module.exports = config;
+

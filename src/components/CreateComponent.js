@@ -30,7 +30,7 @@ export default class CreateComponent extends Component {
             name: this.state.name,
             port: this.state.port
         }
-        axios.post('http://localhost:4200/serverport/add', serverport)
+        axios.post('http://localhost:4209/serverport/add', serverport)
         .then(res =>this.setState({result:res.data}));
         console.log('name is ${this.state.name} and port is ${this.state.port}');
         this.setState({

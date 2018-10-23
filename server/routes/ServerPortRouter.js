@@ -1,27 +1,28 @@
 const express = require('express');
 const app = express();
 const ServerPortRouter = express.Router();
+var db = require('../database/db');
 ServerPortRouter.route('/add').post(function (req, res) {
-  const DB = require('../database/db');
   var name = req.body.name;
   var port = req.body.port;
   // Connect to MySQL on start
-  DB.connection.connect(function(err) {
-    if (err) throw err
-    console.log('You are now connected...')
+  db.connection.getConnection(function(err,connection){
+    if (err) {
+      res.json({"code" : 100, "status" : "Error in connection database"});
+      return;
+    }   
+    console.log('You are now connected... id ' + connection.threadId);
     var sql = "INSERT INTO posts (title, description, user_id) VALUES ?";
-    var values = [
-      [name, port,57]
-    ];
-    DB.connection.query(sql, [values], function(err, results) {
-        if (err) throw res.json(err);
-        res.json('Data Inserted Suucessfully');
-        DB.connection.end();
-        console.log('You are dissconnected...')
-      })
-  })
-
-
+    var values = [[name, port,57]];
+    connection.query(sql, [values], function(error, results) {
+          if (error) throw res.json(error);
+            res.json('Data Inserted Suucessfully');
+          })
+    connection.on('error', function(err) {      
+          res.json({"code" : 100, "status" : "Error in connection database"});
+          return;     
+    });
+  });
 });
 
 ServerPortRouter.route('/').get(function (req, res) {
